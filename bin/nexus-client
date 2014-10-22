@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+
+require 'nexus_client'
+require 'trollop'
+require 'etc'
+
+# read host will read ~/.nexus_host file and
+def read_host(filename="#{Etc.getpwuid.dir}/.nexus_host")
+  fn = File.expand_path(filename)
+  abort("Please create the file #{filename} and add your nexus host") if not File.exists?(filename)
+  begin
+    File.open(fn, 'r') { |f| f.read }.strip
+  rescue Exception => e
+    raise(e)
+  end
+end
+
+opts = Trollop::options do
+  opt :destination, "destination directory to download file to " , :type => :string, :required => true
+  opt :gav_string, "The nexus GAV value: group:artifact:version:repository:classifier:extension" , :type => :string, :required => true
+  opt :cache_dir, "The directory to cache files to" , :type => :string
+  opt :enable_cache, "Enable cache", :default => false, :type => :boolean
+  opt :nexus_host, "Nexus host url, if left blank reads from ~/.nexus_host", :type => :string
+  opt :enable_analytics, "Enable cache analytics, requires sqlite3 gem (experimental!)", :type => :boolean, :default => false
+end
+
+if opts[:nexus_host].nil? or opts[:nexus_host].empty?
+  opts[:nexus_host] = read_host
+end
+
+value = Nexus::Client.download(opts[:destination], opts[:gav_string],
+                      opts[:cache_dir], opts[:enable_cache],
+                      opts[:enable_analytics], opts[:nexus_host])
+
+if value
+  exit(0)
+end
+exit(1)
