@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/logicminds/nexus-client.svg)](https://travis-ci.org/logicminds/nexus-client)
+
+
 # NexusClient
 The nexus client is a ruby wrapper around the nexus REST API for downloading maven artifacts.
 It features the ability to cache artifacts and also performs artifact checksums to ensure you only

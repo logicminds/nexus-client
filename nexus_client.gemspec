@@ -10,21 +10,21 @@ Gem::Specification.new do |spec|
   spec.email         = ["darwin@senet.us", "corey@logicminds.biz"]
   spec.description   = %q{Simple Ruby client for dealing with Nexus}
   spec.summary       = %q{Simple Nexus Ruby Client}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/logicminds/nexus-client"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
-  spec.add_runtime_dependency "trollop"
+  spec.add_runtime_dependency "trollop", "= 2.0"
   spec.add_runtime_dependency "json" if Gem.ruby_version < Gem::Version.new('2.0')
-  spec.add_runtime_dependency "typhoeus"
-  spec.add_runtime_dependency "filesize"
+  spec.add_runtime_dependency "typhoeus", "= 0.6.9"
+  spec.add_runtime_dependency "filesize", "= 0.0.3"
   #spec.add_runtime_dependency "sqlite3"
   spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rake"
-  spec.add_development_dependency "rspec"
-  spec.add_development_dependency "fakefs"
+  spec.add_development_dependency "rake", "= 10.3.2"
+  spec.add_development_dependency "rspec", "= 2.99.0"
+  spec.add_development_dependency "fakefs", "= 0.5.0"
 
 end
