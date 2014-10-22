@@ -21,10 +21,10 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "json" if Gem.ruby_version < Gem::Version.new('2.0')
   spec.add_runtime_dependency "typhoeus", "= 0.6.9"
   spec.add_runtime_dependency "filesize", "= 0.0.3"
-  #spec.add_runtime_dependency "sqlite3"
+  spec.add_development_dependency "sqlite3", '~> 1.3'
   spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rake", "= 10.3.2"
-  spec.add_development_dependency "rspec", "= 2.99.0"
-  spec.add_development_dependency "fakefs", "= 0.5.0"
+  spec.add_development_dependency "rake", "~> 10.3"
+  spec.add_development_dependency "rspec", "~> 2.99"
+  spec.add_development_dependency "fakefs", "= 0.5"
 
 end
