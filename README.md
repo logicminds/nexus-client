@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/logicminds/nexus-client.svg)](https://travis-ci.org/logicminds/nexus-client)
-
+[![Gem Version](https://badge.fury.io/rb/nexus_client.svg)](http://badge.fury.io/rb/nexus_client)
 
 # NexusClient
 The nexus client is a ruby wrapper around the nexus REST API for downloading maven artifacts.
