@@ -11,13 +11,14 @@ require 'fileutils'
 module Nexus
   class Client
     attr_reader :host, :cache
-    attr_accessor :use_cache, :log
+    attr_accessor :use_cache, :log, :path_prefix
 
-    def initialize(nexus_host=nil, cache_dir='/tmp/cache', enable_cache=true, enable_analytics=false,logger=nil)
+    def initialize(nexus_host=nil, cache_dir='/tmp/cache', enable_cache=true, enable_analytics=false,logger=nil, path_prefix='/nexus')
       @log = logger
       @host = nexus_host || default_host
       @host = @host.gsub(/\/nexus$/, '') # just in case user enters /nexus
       @use_cache = enable_cache
+      @path_prefix = path_prefix
       if @use_cache
         @cache_base = cache_dir
         @cache = Nexus::Cache.new(@cache_base, enable_analytics, log)
@@ -74,7 +75,7 @@ module Nexus
     def gav_data(gav)
       res = {}
       request = Typhoeus::Request.new(
-        "#{host}/nexus/service/local/artifact/maven/resolve",
+        "#{host}#{path_prefix}/service/local/artifact/maven/resolve",
         :params  => gav.to_hash,:connecttimeout => 5,
         :headers => { 'Accept' => 'application/json' }
       )
@@ -159,7 +160,7 @@ module Nexus
         cache.record_hit(gav)
       else
         request = Typhoeus::Request.new(
-          "#{host}/nexus/service/local/artifact/maven/redirect",
+          "#{host}#{path_prefix}/service/local/artifact/maven/redirect",
           :params  => gav.to_hash,
           :connecttimeout => 5,
           :followlocation => true
