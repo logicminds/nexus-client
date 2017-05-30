@@ -34,6 +34,18 @@ describe Nexus::Client do
     it { expect(client.host).to eq('http://mynexus.example.com:8080')}
   end
 
+  context 'no path prefix' do
+    #nexus_host=nil, cache_dir='/tmp/cache', enable_cache=true, enable_analytics=false,logger=nil, path_prefix='/nexus'
+    subject(:client) { Nexus::Client.new('http://mynexus.example.com:8080/nexus', '/tmp/cache', 'enable_cache', false, nil, nil) }
+    it { expect(client.host_url).to eq('http://mynexus.example.com:8080')}
+  end
+
+  context 'path prefix' do
+    #nexus_host=nil, cache_dir='/tmp/cache', enable_cache=true, enable_analytics=false,logger=nil, path_prefix='/nexus'
+    subject(:client) { Nexus::Client.new('http://mynexus.example.com:8080/nexus', '/tmp/cache', 'enable_cache', false, nil) }
+    it { expect(client.host_url).to eq('http://mynexus.example.com:8080/nexus')}
+  end
+
   context 'sha1 works' do
     subject(:client) { Nexus::Client.new }
     it {expect(client.sha('/home/user1/.nexus_host')).to eq('87a331f91896d3363e699b828d1cccd37dd07740') }

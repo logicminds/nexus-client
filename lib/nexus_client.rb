@@ -49,35 +49,40 @@ module Nexus
       @log
     end
 
-    def self.download(destination, gav_str, cache_dir='/tmp/cache', enable_cache=false,enable_analytics=false,host=nil)
-      client = Nexus::Client.new(host, cache_dir, enable_cache,enable_analytics)
+    def host_url
+      "#{host}#{path_prefix}"
+    end
+
+    def self.download(destination, gav_str, cache_dir='/tmp/cache', enable_cache=false,enable_analytics=false,host=nil,path_prefix='/nexus')
+      client = Nexus::Client.new(host, cache_dir, enable_cache,enable_analytics, nil, path_prefix)
       client.download_gav(destination, gav_str)
     end
 
     def download_gav(destination, gav_str)
+      log.info("Downloading #{gav_str} from #{host_url} to #{destination}" )
       gav = Nexus::Gav.new(gav_str)
       download(destination, gav)
     end
 
-  def create_target(destination)
-    destination = File.expand_path(destination)
-    if ! File.directory?(destination)
-      begin
-        FileUtils.mkdir_p(destination) if not File.exists?(destination)
-      rescue SystemCallError => e
-        raise e, 'Cannot create directory'
+    def create_target(destination)
+      destination = File.expand_path(destination)
+      if ! File.directory?(destination)
+        begin
+          FileUtils.mkdir_p(destination) if not File.exists?(destination)
+        rescue SystemCallError => e
+          raise e, 'Cannot create directory'
+        end
       end
-    end
 
-  end
+    end
 
     # retrieves the attributes of the gav
     def gav_data(gav)
       res = {}
       request = Typhoeus::Request.new(
-        "#{host}#{path_prefix}/service/local/artifact/maven/resolve",
-        :params  => gav.to_hash,:connecttimeout => 5,
-        :headers => { 'Accept' => 'application/json' }
+      "#{host_url}/service/local/artifact/maven/resolve",
+      :params  => gav.to_hash,:connecttimeout => 5,
+      :headers => { 'Accept' => 'application/json' }
       )
       request.on_failure do |response|
         raise("Failed to get gav data for #{gav.to_s}")
@@ -160,10 +165,10 @@ module Nexus
         cache.record_hit(gav)
       else
         request = Typhoeus::Request.new(
-          "#{host}#{path_prefix}/service/local/artifact/maven/redirect",
-          :params  => gav.to_hash,
-          :connecttimeout => 5,
-          :followlocation => true
+        "#{host_url}/service/local/artifact/maven/redirect",
+        :params  => gav.to_hash,
+        :connecttimeout => 5,
+        :followlocation => true
         )
         request.on_failure do |response|
           raise("Failed to download #{gav.to_s}")

@@ -22,17 +22,18 @@ opts = Trollop::options do
   opt :enable_cache, "Enable cache", :default => false, :type => :boolean
   opt :nexus_host, "Nexus host url, if left blank reads from ~/.nexus_host", :type => :string
   opt :enable_analytics, "Enable cache analytics, requires sqlite3 gem (experimental!)", :type => :boolean, :default => false
+  opt :disable_prefix, "Disable appending '/nexus' in the host connection url", :type => :boolean, default: false, short: 'p'
 end
 
 if opts[:nexus_host].nil? or opts[:nexus_host].empty?
   opts[:nexus_host] = read_host
 end
 
+path_prefix = opts[:disable_prefix] ? nil : '/nexus'
+
 value = Nexus::Client.download(opts[:destination], opts[:gav_string],
                       opts[:cache_dir], opts[:enable_cache],
-                      opts[:enable_analytics], opts[:nexus_host])
+                      opts[:enable_analytics], opts[:nexus_host], path_prefix)
 
-if value
-  exit(0)
-end
-exit(1)
+exit(1) unless value
+exit(0)
